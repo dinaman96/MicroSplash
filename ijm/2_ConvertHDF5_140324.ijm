@@ -23,24 +23,24 @@ croppedHDF5DirPath = output_folder + chip + "Cropped_HDF5" + File.separator;
 File.makeDirectory(largeHDF5DirPath);
 File.makeDirectory(croppedHDF5DirPath);
 
-function processFolder(folderPath, outputLargeDir, outputCroppedDir, crop, cw, ch) {
+function processFolder(folderPath, outputLargeDir, outputCroppedDir, crop, cropWidth, cropHeight) {
     list = getFileList(folderPath);
     for (i = 0; i < list.length; i++) {
         if (endsWith(list[i], suffix)) {
-            processFile(folderPath, outputLargeDir, outputCroppedDir, list[i], crop, cw, ch);
+            processFile(folderPath, outputLargeDir, outputCroppedDir, list[i], crop, cropWidth, cropHeight);
         }
     }
 }
 
-function processFile(inputDir, outputLargeDir, outputCroppedDir, fileName, crop, cw, ch) {
+function processFile(inputDir, outputLargeDir, outputCroppedDir, fileName, crop, cropWidth, cropHeight) {
     open(inputDir + fileName);
     imageTitle = getTitle();
     
     largeHDF5Path = outputLargeDir + fileName.replace(suffix, ".h5");
-    run("Export HDF5", "select=[" + largeHDF5Path + "] exportpath=[" + largeHDF5Path + "] datasetname=data compressionlevel=0 input=[" + imageTitle + "]");
+    //run("Export HDF5", "select=[" + largeHDF5Path + "] exportpath=[" + largeHDF5Path + "] datasetname=data compressionlevel=0 input=[" + imageTitle + "]");
 
     if (crop) {
-        makeRectangle(7000, 7000, cw, ch); //Make sure the cordinates match your images!!!!
+        makeRectangle(7000, 7000, cropWidth, cropHeight); //Make sure the cordinates match your images!!!!
         run("Crop");
         croppedHDF5Path = outputCroppedDir + fileName.replace(suffix, "_cropped.h5");
         run("Export HDF5", "select=[" + croppedHDF5Path + "] exportpath=[" + croppedHDF5Path + "] datasetname=data compressionlevel=0 input=[" + getTitle() + "]");
